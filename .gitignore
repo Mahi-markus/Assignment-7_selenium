@@ -1,0 +1,77 @@
+# Python Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+env/
+venv/
+ENV/
+.venv/
+.Python
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+*.out
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.bak
+
+# WebDriver Manager Files
+.wdm/
+
+# Reports and Test Results
+reports/
+*.csv
+*.json
+*.xml
+
+# Selenium Debug Files
+selenium-debug.log
+
+# Cache
+.cache/
+*.tmp
+*.temp
+
+# Configuration Files
+*.ini
+*.cfg
+
+# Python Packaging
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Jupyter Notebooks (if applicable)
+.ipynb_checkpoints/
+
+# Dependencies
+__pypackages__/
+*.lock
+poetry.lock
+
+# Miscellaneous
+test_output/
+*.bak
+coverage/
+.coverage
+*.cover
+*.gcov
+
+# OS Specific Temp Files
+*.orig
+*.rej
+*.bak
+*.swp
