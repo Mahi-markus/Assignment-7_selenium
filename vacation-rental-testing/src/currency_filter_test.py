@@ -30,7 +30,7 @@ def test_currency_filter(driver):
         time.sleep(3)  # Allow the page to load
         
         # Find the currency dropdown
-        currency_dropdown = driver.find_element(By.CLASS_NAME, "nav-link.cursor-pointer.custom-currency")  # Update as needed
+        currency_dropdown = driver.find_element(By.CLASS_NAME, "footer-currency-dd")  # Update as needed
         currency_dropdown.click()
 
         # Retrieve options within the dropdown
