@@ -4,7 +4,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pandas as pd
+from openpyxl.styles import Font
+from openpyxl import Workbook, load_workbook
 import os
 import time
 
@@ -13,8 +14,20 @@ def save_results_to_excel(results):
     # Define the Excel file name
     excel_file = "test_report.xlsx"
 
-    # Create a DataFrame from the results
-    columns = [
+    # Check if the file exists
+    if os.path.exists(excel_file):
+        # Load the existing workbook
+        workbook = load_workbook(excel_file)
+        # Create a new sheet for the current test
+        sheet = workbook.create_sheet(title="Currency Change Test")
+    else:
+        # Create a new workbook
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = "Currency Change Test"
+
+    # Add header row
+    header = [
         "Currency",
         "Card Number",
         "Initial Price",
@@ -24,19 +37,18 @@ def save_results_to_excel(results):
         "Updated Availability Price",
         "Availability Test Result"
     ]
-    df = pd.DataFrame(results, columns=columns)
+    sheet.append(header)
 
-    # Check if the file exists
-    if os.path.exists(excel_file):
-        # Load existing Excel file
-        with pd.ExcelWriter(excel_file, mode='a', engine='openpyxl') as writer:
-            # Create a new sheet with a unique name
-            sheet_name = f"Currency Change Test {len(pd.ExcelFile(excel_file).sheet_names)}"
-            df.to_excel(writer, sheet_name=sheet_name, index=False)
-    else:
-        # Create a new Excel file
-        df.to_excel(excel_file, sheet_name="Currency Change Test", index=False)
+    # Apply bold styling to the header row
+    for cell in sheet[1]:
+        cell.font = Font(bold=True)
 
+    # Write the test results for all currencies
+    for result in results:
+        sheet.append(result)
+
+    # Save the workbook
+    workbook.save(excel_file)
     print(f"\nTest results saved to '{excel_file}'.")
 
 
@@ -57,10 +69,13 @@ def test_currency_change_for_all(driver, url):
         EC.presence_of_all_elements_located((By.CLASS_NAME, 'js-price-value'))
     )
     price_elements = driver.find_elements(By.CLASS_NAME, 'js-price-value')
-    
-    # Select only the first card for testing
-    first_card_price = price_elements[0].text
-    print(f"First Card Initial Price: {first_card_price}")
+    initial_prices = [elem.text for elem in price_elements]
+    print(f"Found {len(initial_prices)} price elements.")
+
+    # Print initial prices
+    print("Initial Prices:")
+    for i, price in enumerate(initial_prices):
+        print(f"Card {i + 1}: {price}")
 
     # Scroll to the footer section to locate the currency dropdown
     print("Waiting for currency dropdown to become present...")
@@ -114,16 +129,20 @@ def test_currency_change_for_all(driver, url):
             EC.text_to_be_present_in_element((By.CLASS_NAME, 'js-price-value'), currency_text.split()[0])
         )
         updated_price_elements = driver.find_elements(By.CLASS_NAME, 'js-price-value')
-        
-        # Select the first card's updated price
-        first_card_updated_price = updated_price_elements[0].text
-        print(f"First Card Updated Price: {first_card_updated_price}")
+        updated_prices = [elem.text for elem in updated_price_elements]
+
+        # Print updated prices
+        print("Updated Prices (After Currency Change):")
+        for i, price in enumerate(updated_prices):
+            print(f"Card {i + 1}: {price}")
 
         # Compare initial and updated prices
-        if first_card_price != first_card_updated_price:
-            test_result = "PASS (Currency changed successfully)"
-        else:
-            test_result = "FAIL (Currency did not change)"
+        test_results = []
+        for i in range(len(initial_prices)):
+            if initial_prices[i] != updated_prices[i]:
+                test_results.append("PASS (Currency changed successfully)")
+            else:
+                test_results.append("FAIL (Currency did not change)")
 
         # Verify if availability price has changed
         if currency_text.split()[0] in updated_availability_price:
@@ -131,20 +150,20 @@ def test_currency_change_for_all(driver, url):
         else:
             availability_result = "FAIL (Currency did not change)"
 
-        print(f"First Card Price Test Result: {test_result}")
         print(f"Availability Price Test Result: {availability_result}")
 
         # Add results for this currency
-        results.append([
-            currency_text,
-            "Card 1",
-            first_card_price,
-            first_card_updated_price,
-            test_result,
-            initial_availability_price,
-            updated_availability_price,
-            availability_result
-        ])
+        for i in range(len(initial_prices)):
+            results.append([
+                currency_text,
+                f"Card {i + 1}",
+                initial_prices[i],
+                updated_prices[i],
+                test_results[i],
+                initial_availability_price,
+                updated_availability_price,
+                availability_result
+            ])
 
         # Reopen the dropdown for the next currency
         currency_dropdown = driver.find_element(By.ID, 'js-currency-sort-footer')
@@ -174,3 +193,4 @@ if __name__ == "__main__":
         test_currency_change_for_all(driver, "https://www.alojamiento.io/property/apartamentos-centro-coló3n/BC-189483")
     finally:
         driver.quit()
+
