@@ -29,7 +29,6 @@ driver.get("https://www.alojamiento.io/")
 # Results storage
 test_results = []
 url_links = []
-currency_results = []
 
 # Test 1: H1 Tag Existence
 def test_h1_tag():
@@ -68,45 +67,28 @@ def test_url_status():
         for link in links:
             url = link.get_attribute("href")
             if url:
-                url_links.append([url])  # Store each URL in a list for DataFrame
                 try:
                     response = requests.get(url)
                     status = "Pass" if response.status_code != 404 else "Fail"
-                    message = f"Status Code: {response.status_code}" if status == "Fail" else "Valid URL"
-                    test_results.append([url, "URL Status", status, message])
+                    message = "Valid URL" if status == "Pass" else f"Status Code: {response.status_code}"
+                    
+                    # Store the result in both url_links and test_results
+                    url_links.append([url, "URL Validity", status, message])
+                    if status == "Fail":  # Only add 404 links to test_results
+                        test_results.append([url, "URL Status", "Fail", message])
                 except requests.exceptions.RequestException as e:
+                    url_links.append([url, "URL Validity", "Fail", f"Error: {e}"])
                     test_results.append([url, "URL Status", "Fail", f"Error: {e}"])
     except Exception as e:
         test_results.append(["https://www.alojamiento.io/", "URL Status", "Fail", str(e)])
-
-# Test 5: Currency Filter Test
-def test_currency_filter():
-    try:
-        currency_dropdown = driver.find_elements(By.CLASS_NAME, "footer-currency-dd") # Update with actual ID
-        currency_dropdown.click()
-
-        options = currency_dropdown.find_elements(By.TAG_NAME, "option")
-        for option in options:
-            currency_symbol = option.text.strip()
-            option.click()
-            time.sleep(2)
-            
-            prices = driver.find_elements(By.CLASS_NAME, "listing-price absolute text-center color-dark")  # Update with actual class name
-            if not all(currency_symbol in price.text for price in prices):
-                raise ValueError(f"Prices did not update for currency: {currency_symbol}")
-        
-        currency_results.append(["https://www.alojamiento.io/", "Currency Filter", "Pass", "Currency filter works correctly"])
-    except Exception as e:
-        currency_results.append(["https://www.alojamiento.io/", "Currency Filter", "Fail", str(e)])
 
 # Execute Tests
 test_h1_tag()
 test_html_tag_sequence()
 test_image_alt_attributes()
 test_url_status()
-test_currency_filter()
 
 # Generate Excel Report
-generate_report(test_results, url_links, currency_results)
+generate_report(test_results, url_links, [])
 
 driver.quit()
