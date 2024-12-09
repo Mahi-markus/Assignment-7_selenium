@@ -8,6 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from report_generator import generate_report  # Import from the separate report generation module
 
+
 # Choose browser (Chrome by default)
 BROWSER = "chrome"  # Change to "firefox" for Firefox browser
 
@@ -89,6 +90,6 @@ test_image_alt_attributes()
 test_url_status()
 
 # Generate Excel Report
-generate_report(test_results, url_links, [])
+generate_report(test_results, url_links)
 
 driver.quit()

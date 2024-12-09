@@ -7,37 +7,30 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import os
 import time
+from report_generator import generate_report 
 
 
-def save_results_to_excel(results):
-    # Define the Excel file name
-    excel_file = "test_report.xlsx"
+# def save_results_to_excel(results):
+#     # Define the Excel file name
+#     #excel_file = "vacation_rental_test_report.xlsx"
 
-    # Create a DataFrame from the results
-    columns = [
-        "Currency",
-        "Card Number",
-        "Initial Price",
-        "Updated Price",
-        "Test Result",
-        "Initial Availability Price",
-        "Updated Availability Price",
-        "Availability Test Result"
-    ]
-    df = pd.DataFrame(results, columns=columns)
+#     # Create a DataFrame from the results
+#     columns = [
+#         "Currency",
+#         "Card Number",
+#         "Initial Price",
+#         "Updated Price",
+#         "Test Result",
+#         "Initial Availability Price",
+#         "Updated Availability Price",
+#         "Availability Test Result"
+#     ]
+#     df = pd.DataFrame(results, columns=columns)
 
-    # Check if the file exists
-    if os.path.exists(excel_file):
-        # Load existing Excel file
-        with pd.ExcelWriter(excel_file, mode='a', engine='openpyxl') as writer:
-            # Create a new sheet with a unique name
-            sheet_name = f"Currency Change Test {len(pd.ExcelFile(excel_file).sheet_names)}"
-            df.to_excel(writer, sheet_name=sheet_name, index=False)
-    else:
-        # Create a new Excel file
-        df.to_excel(excel_file, sheet_name="Currency Change Test", index=False)
-
-    print(f"\nTest results saved to '{excel_file}'.")
+#     # Save to the "Currency" sheet
+#     # with pd.ExcelWriter(excel_file, mode='a', engine='openpyxl') as writer:
+#     #     df.to_excel(writer, sheet_name="Currency", index=False)
+# # print(f"\nCurrency test results saved to '{excel_file}' under the 'Currency' sheet.")
 
 
 def test_currency_change_for_all(driver, url):
@@ -152,13 +145,13 @@ def test_currency_change_for_all(driver, url):
         currency_dropdown.click()
         currency_options = driver.find_elements(By.XPATH, "//div[@class='footer-section']//div[@class='footer-currency-dd']//ul[@class='select-ul']//li")
 
-        
-    # Save all results to Excel
-    save_results_to_excel(results)
+    return results
 
 
 # Main execution
 if __name__ == "__main__":
+  
+
     # Set Chrome options
     options = webdriver.ChromeOptions()
     # options.add_argument('--headless')  # Uncomment to run in headless mode
@@ -171,6 +164,20 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
-        test_currency_change_for_all(driver, "https://www.alojamiento.io/property/apartamentos-centro-coló3n/BC-189483")
+        url = "https://www.alojamiento.io/property/apartamentos-centro-coló3n/BC-189483"
+        currency_results = test_currency_change_for_all(driver, url)
+
+        # Prepare dummy test_results and url_links (Replace with actual results)
+        test_results = [
+            [url, "Sample Test 1", "PASS", "Test passed successfully"],
+            [url, "Sample Test 2", "FAIL", "Test failed"]
+        ]
+        url_links = [
+            [url, "URL Link 1", "PASS", "Valid link"],
+            [url, "URL Link 2", "FAIL", "Broken link"]
+        ]
+
+        # Generate the report
+        generate_report(test_results,url_links,currency_results)
     finally:
         driver.quit()

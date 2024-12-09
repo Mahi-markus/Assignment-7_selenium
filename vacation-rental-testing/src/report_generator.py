@@ -1,20 +1,25 @@
 import pandas as pd
 
-def generate_report(test_results, url_links, currency_results):
-    # Convert test_results to a DataFrame
-    test_results_df = pd.DataFrame(test_results, columns=["URL", "Test Name", "Status", "Message"])
-    
-    # Convert url_links to a DataFrame with proper column names
-    url_links_df = pd.DataFrame(
-        url_links, 
-        columns=["URL", "Test Name", "Status", "Message"]
-    )
-    
-    # Save the DataFrames to an Excel file
-    with pd.ExcelWriter("vacation_rental_test_report.xlsx") as writer:
-        test_results_df.to_excel(writer, sheet_name="Test Results", index=False)
-        url_links_df.to_excel(writer, sheet_name="URL Links", index=False)
-        if currency_results:  # Include currency results if provided
-            currency_results_df = pd.DataFrame(currency_results, columns=["URL", "Test Name", "Status", "Message"])
-            currency_results_df.to_excel(writer, sheet_name="Currency Results", index=False)
+def generate_report(test_results=None, url_links=None, currency_results=None):
+    with pd.ExcelWriter("vacation_rental_test_report.xlsx", engine="openpyxl") as writer:
+        if test_results:
+            test_results_df = pd.DataFrame(test_results, columns=["URL", "Test Name", "Status", "Message"])
+            test_results_df.to_excel(writer, sheet_name="Test Results", index=False)
+
+        if url_links:
+            url_links_df = pd.DataFrame(url_links, columns=["URL", "Test Name", "Status", "Message"])
+            url_links_df.to_excel(writer, sheet_name="URL Links", index=False)
+
+        if currency_results:
+            currency_results_df = pd.DataFrame(
+                currency_results, 
+                columns=[
+                    "Currency", "Card Number", "Initial Price", "Updated Price", "Test Result", 
+                    "Initial Availability Price", "Updated Availability Price", "Availability Test Result"
+                ]
+            )
+            currency_results_df.to_excel(writer, sheet_name="Currency", index=False)
+
+    print("Report generated successfully in 'vacation_rental_test_report.xlsx'.")
+
 
