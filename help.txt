@@ -12,3 +12,10 @@ source venv/bin/activate
 
 # Install requirements
 pip install -r requirements.txt
+
+
+
+ columns=[
+                        "Currency", "Card Number", "Initial Price", "Updated Price", "Test Result", 
+                        "Initial Price", "Updated Price", "Final Test Result"
+                    ]

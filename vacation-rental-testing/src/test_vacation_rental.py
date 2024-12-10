@@ -7,11 +7,13 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from report_generator import generate_report  # Import from the separate report generation module
+from currency_filter_test import test_currency_change_for_all
 
 
 # Choose browser (Chrome by default)
 BROWSER = "chrome"  # Change to "firefox" for Firefox browser
-
+url="https://www.alojamiento.io/"
+currency_results = []
 # Initialize WebDriver
 def setup_driver():
     if BROWSER.lower() == "chrome":
@@ -26,6 +28,11 @@ def setup_driver():
 driver = setup_driver()
 driver.maximize_window()
 driver.get("https://www.alojamiento.io/")
+
+driver = webdriver.Chrome()
+driver.get("https://www.alojamiento.io/")
+logs = driver.get_log("browser")
+print(logs)
 
 # Results storage
 test_results = []
@@ -62,34 +69,35 @@ def test_image_alt_attributes():
         test_results.append(["https://www.alojamiento.io/", "Image Alt Attribute", "Fail", str(e)])
 
 # Test 4: URL Status Code
-def test_url_status():
-    try:
-        links = driver.find_elements(By.TAG_NAME, "a")
-        for link in links:
-            url = link.get_attribute("href")
-            if url:
-                try:
-                    response = requests.get(url)
-                    status = "Pass" if response.status_code != 404 else "Fail"
-                    message = "Valid URL" if status == "Pass" else f"Status Code: {response.status_code}"
+# def test_url_status():
+#     try:
+#         links = driver.find_elements(By.TAG_NAME, "a")
+#         for link in links:
+#             url = link.get_attribute("href")
+#             if url:
+#                 try:
+#                     response = requests.get(url)
+#                     status = "Pass" if response.status_code != 404 else "Fail"
+#                     message = "Valid URL" if status == "Pass" else f"Status Code: {response.status_code}"
                     
-                    # Store the result in both url_links and test_results
-                    url_links.append([url, "URL Validity", status, message])
-                    if status == "Fail":  # Only add 404 links to test_results
-                        test_results.append([url, "URL Status", "Fail", message])
-                except requests.exceptions.RequestException as e:
-                    url_links.append([url, "URL Validity", "Fail", f"Error: {e}"])
-                    test_results.append([url, "URL Status", "Fail", f"Error: {e}"])
-    except Exception as e:
-        test_results.append(["https://www.alojamiento.io/", "URL Status", "Fail", str(e)])
+#                     # Store the result in both url_links and test_results
+#                     url_links.append([url, "URL Validity", status, message])
+#                     if status == "Fail":  # Only add 404 links to test_results
+#                         test_results.append([url, "URL Status", "Fail", message])
+#                 except requests.exceptions.RequestException as e:
+#                     url_links.append([url, "URL Validity", "Fail", f"Error: {e}"])
+#                     test_results.append([url, "URL Status", "Fail", f"Error: {e}"])
+#     except Exception as e:
+#         test_results.append(["https://www.alojamiento.io/", "URL Status", "Fail", str(e)])
 
 # Execute Tests
 test_h1_tag()
 test_html_tag_sequence()
 test_image_alt_attributes()
-test_url_status()
+#test_url_status()
+currency_results = test_currency_change_for_all(driver,url)
 
 # Generate Excel Report
-generate_report(test_results, url_links)
+generate_report(test_results, url_links,currency_results)
 
 driver.quit()

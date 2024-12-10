@@ -15,8 +15,8 @@ def generate_report(test_results=None, url_links=None, currency_results=None):
                 currency_results_df = pd.DataFrame(
                     currency_results, 
                     columns=[
-                        "Currency", "Card Number", "Initial Price", "Updated Price", "Test Result", 
-                        "Initial Availability Price", "Updated Availability Price", "Availability Test Result"
+                        "Currency",  "Test Result", "Updated Price", 
+                         "Final Test Result"
                     ]
                 )
                 currency_results_df.to_excel(writer, sheet_name="Currency", index=False)

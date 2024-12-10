@@ -12,10 +12,12 @@ from image_alt_test import test_image_alt_attributes
 from currency_test import test_currency_change_for_all
 from report_generator import generate_report
 from url_tests import test_url_status  # Import the new test
+#from currency_filter_test import test_currency_change_for_all
+from currency_testing1 import test_currency_change
 
 
 BROWSER = "chrome"
-TIMEOUT = 30  # Timeout duration in seconds
+TIMEOUT = 60  # Timeout duration in seconds
 
 
 # Initialize WebDriver
@@ -26,6 +28,7 @@ def initialize_driver():
     options.add_argument("--disable-dev-shm-usage")  # Prevent shared memory issues
     options.add_argument("--disable-gpu")  # Disable GPU acceleration
     options.add_argument("--log-level=3")  # Reduce log verbosity
+    options.add_argument("--disable-analytics")
 
     if BROWSER.lower() == "chrome":
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -37,12 +40,15 @@ def initialize_driver():
 # Main function to run all tests
 def main():
     url = "https://www.alojamiento.io/"
+    url1 = "https://www.alojamiento.io/property/la-vigne-et-l-olivier-b-b/BC-437637"
     test_results = []
     currency_results = []
     url_links = []
+    
 
     # Initialize WebDriver
     driver = initialize_driver()
+    driver.maximize_window()
 
     try:
         # Open the target URL
@@ -52,7 +58,7 @@ def main():
         wait = WebDriverWait(driver, TIMEOUT)
 
         # Wait until the page is loaded (for example, checking the presence of <body> element)
-        #wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
         # Run the tests
         print("Running H1 Tag Existence Test...")
@@ -71,7 +77,8 @@ def main():
         print(f"URL Links: {url_links}")
 
         print("Running Currency Change Test...")
-        #currency_results = test_currency_change_for_all(driver, url)
+        currency_results=test_currency_change(driver,url1)
+       
 
         # Generate the report
         print("Generating the report...")
