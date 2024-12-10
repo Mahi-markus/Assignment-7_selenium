@@ -40,7 +40,7 @@ def initialize_driver():
 # Main function to run all tests
 def main():
     url = "https://www.alojamiento.io/"
-    url1 = "https://www.alojamiento.io/property/la-vigne-et-l-olivier-b-b/BC-437637"
+    url_currency = "https://www.alojamiento.io/property/la-vigne-et-l-olivier-b-b/BC-437637"
     test_results = []
     currency_results = []
     url_links = []
@@ -77,7 +77,7 @@ def main():
         print(f"URL Links: {url_links}")
 
         print("Running Currency Change Test...")
-        currency_results=test_currency_change(driver,url1)
+        currency_results=test_currency_change(driver,url_currency)
        
 
         # Generate the report
