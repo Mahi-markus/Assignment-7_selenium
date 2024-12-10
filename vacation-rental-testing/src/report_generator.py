@@ -2,7 +2,7 @@ import pandas as pd
 
 def generate_report(test_results=None, url_links=None, currency_results=None):
     try:
-        with pd.ExcelWriter("vacation_rental_test_report.xlsx", engine="openpyxl") as writer:
+        with pd.ExcelWriter("Outputs/vacation_rental_test_report.xlsx", engine="openpyxl") as writer:
             if test_results:
                 test_results_df = pd.DataFrame(test_results, columns=["URL", "Test Name", "Status", "Message"])
                 test_results_df.to_excel(writer, sheet_name="Test Results", index=False)
