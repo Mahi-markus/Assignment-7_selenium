@@ -67,7 +67,7 @@ if df.empty:
     print("No data was extracted!")
 else:
     # Save to Excel
-    df.to_excel("Outputs/Scraped_Data.xlsx", index=False)
+    df.to_excel("Output/Scraped_Data.xlsx", index=False)
 
 # Close the driver
 driver.quit()
