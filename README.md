@@ -12,7 +12,7 @@ This project automates the testing of a vacation rental details page to validate
 - Scrape and save site-related data to an Excel file.
 
 ## Requirements
-
+- **Operating System**    :Linux
 - **Programming Language**: Python
 - **Libraries/Tools**: Selenium, Pandas
 - **Browser**: Google Chrome
@@ -27,10 +27,6 @@ Follow these steps to clone the repository, set up the environment, and run the 
 ```bash
 git clone https://github.com/Mahi-markus/Assignment-7_selenium.git
 
-```
-
-```bash
-cd Assignment-7_selenium
 ```
 
 ### 2. Create a virtual environment and activate it:
@@ -59,7 +55,14 @@ pip install -r requirements.txt
 
 ```
 
-### 5. Run the Automation:
+### 5. Navigate to src folder
+
+```bash
+cd src
+
+```
+
+### 6. Run the Automation:
 
 ```bash
 python main.py
@@ -68,24 +71,23 @@ python3 main.py
 
 ```
 
-### 6. Run scappper to get the scrape data:
+### 7. Run scappper to get the scraped data:
 
 ```bash
 python scrapper.py
     or
-python3 main.py
+python3 scrapper.py
 
 ```
 
-### 6. Output
+### 8. Output
 
-- Test results and scrapte data will be saved in an Excel file located in the Outputs folder.
+- Test results and scrapte data will be saved in an Excel file located in the **Output**(src/Output) folder.
 - Each test case result includes:
   page_url
-  testcase
+  testname
   passed/fail
   comments
-  Project Structure
-  main.py: The main script to run the tests.
-  Outputs/: Folder where the generated Excel reports are saved.
-  requirements.txt: List of required Python libraries.
+- main.py: The main script to run the tests.
+- Output/: Folder where the generated Excel reports are saved.
+- requirements.txt: List of required necessary libraries.
