@@ -9,11 +9,9 @@ from selenium.webdriver.common.by import By
 from h1_tag_test import test_h1_tag
 from html_tag_sequence_test import test_html_tag_sequence
 from image_alt_test import test_image_alt_attributes
-from currency_test import test_currency_change_for_all
 from report_generator import generate_report
 from url_tests import test_url_status  # Import the new test
-#from currency_filter_test import test_currency_change_for_all
-from currency_testing1 import test_currency_change
+from currency_tests import test_currency_change
 
 
 BROWSER = "chrome"
