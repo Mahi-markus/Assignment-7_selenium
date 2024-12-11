@@ -13,7 +13,7 @@ This project automates the testing of a vacation rental details page to validate
 
 ## Requirements
 - **Operating System**    :Linux
-- **Programming Language**: Python
+- **Programming Language**: Python ( Version: 3.8 or later )
 - **Libraries/Tools**: Selenium, Pandas
 - **Browser**: Google Chrome
 - **Tested on**: [https://www.alojamiento.io/](https://www.alojamiento.io/)
